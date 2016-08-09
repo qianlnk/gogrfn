@@ -1,4 +1,4 @@
-package main
+package gografana
 
 import (
 	"fmt"
@@ -24,7 +24,67 @@ func TestNewOrg(t *testing.T) {
 }
 
 func TestNewDashBoard(t *testing.T) {
-	dbjson := `{"dashboard": {"id": null,"title": "Production erer","tags": [ "test" ],"timezone": "browser","rows": [{}],"schemaVersion": 6,"version": 0},"overwrite": false}`
+	dbjson := `{
+    "dashboard": {
+        "annotations": {
+            "list": [ ]
+        }, 
+        "editable": true, 
+        "hideControls": false, 
+        "id": null, 
+        "links": [ ], 
+        "originalTitle": "Market By Minute", 
+        "refresh": "30s", 
+        "rows": [
+            {
+                "collapse": false, 
+                "editable": true, 
+                "height": "250px", 
+                "panels": [ ], 
+                "title": "New row"
+            }
+        ], 
+        "schemaVersion": 12, 
+        "sharedCrosshair": false, 
+        "style": "dark", 
+        "tags": [ ], 
+        "templating": {
+            "list": [ ]
+        }, 
+        "time": {
+            "from": "now-3h", 
+            "to": "now"
+        }, 
+        "timepicker": {
+            "refresh_intervals": [
+                "5s", 
+                "10s", 
+                "30s", 
+                "1m", 
+                "5m", 
+                "15m", 
+                "30m", 
+                "1h", 
+                "2h", 
+                "1d"
+            ], 
+            "time_options": [
+                "5m", 
+                "15m", 
+                "1h", 
+                "6h", 
+                "12h", 
+                "24h", 
+                "2d", 
+                "7d", 
+                "30d"
+            ]
+        }, 
+        "timezone": "utc", 
+        "title": "Market By Minute", 
+        "version": 0
+    }
+}`
 	cli, _ := NewGrafanaClient(key, URL, user, password)
 	fmt.Println(cli.NewDashBoard(dbjson))
 }

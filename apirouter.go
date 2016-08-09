@@ -1,4 +1,4 @@
-package main
+package gografana
 
 const (
 	METHOD_GET    = "GET"
@@ -7,5 +7,5 @@ const (
 
 	API_ORG           = "/api/org/"
 	API_ORGS          = "/api/orgs/"
-	API_DASHBOARDS_DB = "/api/dashboards/db"
+	API_DASHBOARDS_DB = "/api/dashboards/db/"
 )

@@ -1,4 +1,4 @@
-package main
+package gografana
 
 import (
 	"errors"
@@ -64,12 +64,18 @@ func (c *Client) get(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
+
+	mybody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
 
 	if res.StatusCode != 200 {
-		return nil, errors.New(res.Status)
+		return nil, errors.New(fmt.Sprintf("%s %s", res.Status, string(mybody)))
 	}
-	defer res.Body.Close()
-	return ioutil.ReadAll(res.Body)
+
+	return mybody, nil
 
 }
 func (c *Client) post(path string, body io.Reader) error {
@@ -83,10 +89,46 @@ func (c *Client) post(path string, body io.Reader) error {
 		return err
 	}
 	defer res.Body.Close()
-	mybody, _ := ioutil.ReadAll(res.Body)
+
+	mybody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	if res.StatusCode != 200 {
 		return errors.New(fmt.Sprintf("%s %s", res.Status, string(mybody)))
 	}
 
 	return nil
 }
+
+func (c *Client) delete(path string) error {
+	req, err := c.newRequest(METHOD_DELETE, path, nil)
+	if err != nil {
+		return err
+	}
+
+	res, err := c.Do(req)
+	if err != nil {
+		return err
+	}
+
+	defer res.Body.Close()
+	mybody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != 200 {
+		return errors.New(fmt.Sprintf("%s %s", res.Status, string(mybody)))
+	}
+
+	return nil
+}
+
+//
+//
+//
+//
+//
+//
