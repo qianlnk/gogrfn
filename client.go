@@ -92,7 +92,7 @@ func (c *Client) post(path string, body io.Reader) error {
 
 	mybody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if res.StatusCode != 200 {
@@ -116,7 +116,7 @@ func (c *Client) delete(path string) error {
 	defer res.Body.Close()
 	mybody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if res.StatusCode != 200 {
