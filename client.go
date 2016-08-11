@@ -9,14 +9,6 @@ import (
 	"net/url"
 )
 
-type Client struct {
-	ApiKey   string
-	BaseURL  *url.URL
-	User     string
-	Password string
-	*http.Client
-}
-
 func NewGrafanaClient(key, baseURL, user, password string) (*Client, error) {
 	u, err := url.Parse(baseURL)
 	if err != nil {

@@ -1,6 +1,7 @@
 package gografana
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 )
@@ -23,68 +24,47 @@ func TestNewOrg(t *testing.T) {
 	fmt.Println(cli.NewOrg("lnktest"))
 }
 
-func TestNewDashBoard(t *testing.T) {
-	dbjson := `{
-    "dashboard": {
-        "annotations": {
-            "list": [ ]
-        }, 
-        "editable": true, 
-        "hideControls": false, 
-        "id": null, 
-        "links": [ ], 
-        "originalTitle": "Market By Minute", 
-        "refresh": "30s", 
-        "rows": [
-            {
-                "collapse": false, 
-                "editable": true, 
-                "height": "250px", 
-                "panels": [ ], 
-                "title": "New row"
-            }
-        ], 
-        "schemaVersion": 12, 
-        "sharedCrosshair": false, 
-        "style": "dark", 
-        "tags": [ ], 
-        "templating": {
-            "list": [ ]
-        }, 
-        "time": {
-            "from": "now-3h", 
-            "to": "now"
-        }, 
-        "timepicker": {
-            "refresh_intervals": [
-                "5s", 
-                "10s", 
-                "30s", 
-                "1m", 
-                "5m", 
-                "15m", 
-                "30m", 
-                "1h", 
-                "2h", 
-                "1d"
-            ], 
-            "time_options": [
-                "5m", 
-                "15m", 
-                "1h", 
-                "6h", 
-                "12h", 
-                "24h", 
-                "2d", 
-                "7d", 
-                "30d"
-            ]
-        }, 
-        "timezone": "utc", 
-        "title": "Market By Minute", 
-        "version": 0
-    }
-}`
+func TestGetDashboard(t *testing.T) {
 	cli, _ := NewGrafanaClient(key, URL, user, password)
-	fmt.Println(cli.NewDashBoard(dbjson))
+	fmt.Println(cli.GetDashboard("market-by-minute"))
+}
+
+func TestNewDashboard(t *testing.T) {
+	cli, _ := NewGrafanaClient(key, URL, user, password)
+	fmt.Println(cli.NewDashboard("lnk111", "utc"))
+}
+
+func TestDeleteDashboard(t *testing.T) {
+	cli, _ := NewGrafanaClient(key, URL, user, password)
+	fmt.Println(cli.DeleteDashboard(" "))
+}
+
+func TestAddNewRow(t *testing.T) {
+	//Authorization
+	cli, _ := NewGrafanaClient(key, URL, user, password)
+	//get the dashboard you want upload
+	db, err := cli.GetDashboard("market-by-minute")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	//get the inherit panel
+	panel, err := cli.GetInheritPanel("market-by-minute", 1)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	//add a new row
+	db.AddRow("myrow1")
+
+	//get next panelID
+	panelID := db.GetNextPanelID()
+	sqls := []string{`SELECT sum("Kafka") FROM "m.request" WHERE $timeFilter GROUP BY time(1h) fill(null)`,
+		`SELECT sum("Send") FROM "m.request" WHERE $timeFilter GROUP BY time(1h) fill(null)`,
+		`SELECT sum("Mysql") FROM "m.request" WHERE $timeFilter GROUP BY time(1h) fill(null)`}
+	db.Rows[len(db.Rows)-1].AddPanel(panel, panelID, "m.request by hour", sqls, "influxdb")
+	body, _ := json.Marshal(db)
+	fmt.Println("add panel", string(body))
+	cli.UploadDashboard(db)
 }

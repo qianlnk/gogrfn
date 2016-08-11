@@ -1,0 +1,30 @@
+{
+    "client":{
+        "apiKey":"eyJrIjoiZjRjTmZQYmZSVjg5YWJVV0I1anc0b0d0SlVBREtzUlAiLCJuIjoibG5rIiwiaWQiOjF9",
+        "baseUrl":"http://192.168.99.100:3000",
+        "user":"admin",
+        "password":"admin"
+    },
+    "dashboard":{
+        "title":"Market By Hour",
+        "timezone":"utc",
+        "inheritTitle":"Market By Minute",
+        "inheritPanelid":1,
+        "rows":[
+            {
+                "title":"New Row",
+                "panels":[
+                    {
+                        "title":"m.request BY HOUR",
+                        "dsType":"infuxdb",
+                        "sqls":[
+                            "SELECT sum(\"Kafka\") FROM \"m.request\" WHERE $timeFilter GROUP BY time(1h) fill(null)",
+                            "SELECT sum(\"Send\") FROM \"m.request\" WHERE $timeFilter GROUP BY time(1h) fill(null)",
+                            "SELECT sum(\"Mysql\") FROM \"m.request\" WHERE $timeFilter GROUP BY time(1h) fill(null)"
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
