@@ -1,11 +1,4 @@
 {
-    "client":{
-        "apiKey":"eyJrIjoiOE5vR3BTS280U0l1azlIZFBUbWRGdXhYOW9hMVBmdHYiLCJuIjoiYWRtaW4iLCJpZCI6MX0=",
-        "baseUrl":"http://measure.sandbox.appcoachs.com",
-        "user":"admin",
-        "password":"VrzPn9ti7*"
-    },
-    "dashboard":{
         "title":"m-stats-day",
         "timezone":"utc",
         "inheritTitle":"m-stats-5min",
@@ -27,5 +20,4 @@
                 ]
             }
         ]
-    }
 }

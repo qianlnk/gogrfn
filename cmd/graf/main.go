@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/qianlnk/gogrfn"
+	"github.com/qianlnk/graf"
 )
 
 type Config struct {
@@ -26,6 +26,7 @@ type Dashboard struct {
 	Timezone       string `json:"timezone"`
 	InheritTitle   string `json:"inheritTitle"`
 	InheritPanelID int64  `json:"inheritPanelid"`
+	Template       string `json:"template"`
 	Rows           []Row  `json:"rows"`
 }
 
@@ -40,37 +41,58 @@ type Panel struct {
 	Sqls   []string `json:"sqls"`
 }
 
-func getConfig(filename string) (Config, error) {
-	var config Config
-	file, err := ioutil.ReadFile(filename)
+func getClientCfg() (Client, error) {
+	var cli Client
+	file, err := ioutil.ReadFile("config.json")
 	if err != nil {
-		return Config{}, err
+		return cli, err
 	}
 
-	err = json.Unmarshal(file, &config)
+	err = json.Unmarshal(file, &cli)
 	if err != nil {
-		return Config{}, err
+		return cli, err
 	}
 
-	return config, nil
+	return cli, nil
 }
 
+func getDashboard(filename string) (Dashboard, error) {
+	var db Dashboard
+	file, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return Dashboard{}, err
+	}
+
+	err = json.Unmarshal(file, &db)
+	if err != nil {
+		return Dashboard{}, err
+	}
+
+	return db, nil
+}
+
+func getTemplate(filename string) {}
 func main() {
 	file := flag.String("file", "default.json", "Use -file <template json file>")
 	flag.Parse()
-	cfg, err := getConfig(*file)
+	cliCfg, err := getClientCfg()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	cli, err := gografana.NewGrafanaClient(cfg.Client.ApiKey, cfg.Client.BaseURL, cfg.Client.User, cfg.Client.Password)
+	cli, err := gografana.NewGrafanaClient(cliCfg.ApiKey, cliCfg.BaseURL, cliCfg.User, cliCfg.Password)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
+	dbCfg, err := getDashboard(*file)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	//get inherit panel
-	inheritPanel, err := cli.GetInheritPanel(cfg.Dashboard.InheritTitle, cfg.Dashboard.InheritPanelID)
+	inheritPanel, err := cli.GetInheritPanel(dbCfg.InheritTitle, dbCfg.InheritPanelID)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -78,16 +100,16 @@ func main() {
 
 	//get db, create db if it not exist
 	var db *gografana.Dashboard
-	db, err = cli.GetDashboard(cfg.Dashboard.Title)
+	db, err = cli.GetDashboard(dbCfg.Title)
 	if err != nil {
-		db, err = cli.NewDashboard(cfg.Dashboard.Title, cfg.Dashboard.Timezone)
+		db, err = cli.NewDashboard(dbCfg.Title, dbCfg.Timezone)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 	}
 
-	for _, r := range cfg.Dashboard.Rows {
+	for _, r := range dbCfg.Rows {
 		//add new row
 		db.AddRow(r.Title)
 		for _, p := range r.Panels {
