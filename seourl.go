@@ -26,7 +26,7 @@ func SEOURL(s string) string {
 	seoStrByte = regE.ReplaceAll([]byte(seoStr), []byte(""))
 	seoStr = string(seoStrByte) // convert []byte to string
 
-	regE = regexp.MustCompile("[!/:-@[-`{-~]")
+	regE = regexp.MustCompile("[!:-@[-`{-~]")
 	seoStrByte = regE.ReplaceAll([]byte(seoStr), []byte(""))
 	seoStr = string(seoStrByte) // convert []byte to string
 

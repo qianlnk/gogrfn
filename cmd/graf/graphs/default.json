@@ -1,0 +1,24 @@
+{
+	"title":"default",
+	"timezone":"utc",
+	"templateType":"lacal",
+	"inheritTitle":"",
+	"inheritPanelid":0,
+	"templateFile":"templates/default.json",
+	"rows":[
+		{
+			"title":"New Row",
+			"panels":[
+				{
+					"title":"default",
+					"dsType":"infuxdb",
+					"sqls":[
+						"",
+						""
+					]
+				}
+			]
+		}
+	]
+}
+

@@ -34,7 +34,7 @@ func NewGrafanaClient(key, baseURL, user, password string) (*Client, error) {
 func (c *Client) newRequest(method, path string, body io.Reader) (*http.Request, error) {
 	u := c.BaseURL
 	u.Path = path
-	fmt.Println(u.String())
+
 	req, err := http.NewRequest(method, u.String(), body)
 	if err != nil {
 		return nil, err

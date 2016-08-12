@@ -6,5 +6,5 @@ import (
 )
 
 func TestSEOURL(t *testing.T) {
-	fmt.Println(SEOURL("Offset By Hour"))
+	fmt.Println(SEOURL("Offset By Hour/test"))
 }

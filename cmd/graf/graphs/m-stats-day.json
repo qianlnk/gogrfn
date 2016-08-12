@@ -1,0 +1,86 @@
+{
+	"title":"m-stats-day",
+	"interval":"15d",
+	"timezone":"utc",
+	"templateType":"lacal",
+	"inheritTitle":"m-stats-5min",
+	"inheritPanelid":4,
+	"templateFile":"templates/request5min.json",
+	"rows":[
+		{
+			"title":"New Row",
+			"panels":[
+				{
+					"title":"request",
+					"dsType":"infuxdb",
+					"sqls":[
+						"SELECT sum(\"count\") as src FROM \"request\" WHERE \"step\" = 'src' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as sent FROM \"request\" WHERE \"step\" = 'sent' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as queue FROM \"request\" WHERE \"step\" = 'queue' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as mysql FROM \"request\" WHERE \"step\" = 'mysql' AND $timeFilter GROUP BY time(1d) fill(0)"
+					]
+				}
+			]
+		},{
+			"title":"New Row",
+			"panels":[
+				{
+					"title":"response/transaction",
+					"dsType":"infuxdb",
+					"sqls":[
+						"SELECT sum(\"count\") as src FROM \"response\" WHERE \"step\" = 'src' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as sent FROM \"response\" WHERE \"step\" = 'sent' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as queue FROM \"response\" WHERE \"step\" = 'queue' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as mysql FROM \"response\" WHERE \"step\" = 'mysql' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as src FROM \"transaction\" WHERE \"step\" = 'src' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as sent FROM \"transaction\" WHERE \"step\" = 'sent' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as queue FROM \"transaction\" WHERE \"step\" = 'queue' AND $timeFilter GROUP BY time(1d) fill(0)"
+					]
+				}
+			]
+		},{
+			"title":"New Row",
+			"panels":[
+				{
+					"title":"impression",
+					"dsType":"infuxdb",
+					"sqls":[
+						"SELECT sum(\"count\") as src FROM \"impression\" WHERE \"step\" = 'src' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as sent FROM \"impression\" WHERE \"step\" = 'sent' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as queue FROM \"impression\" WHERE \"step\" = 'queue' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as mysql FROM \"impression\" WHERE \"step\" = 'mysql' AND $timeFilter GROUP BY time(1d) fill(0)"
+					]
+				}
+			]
+		},{
+			"title":"New Row",
+			"panels":[
+				{
+					"title":"click",
+					"dsType":"infuxdb",
+					"sqls":[
+						"SELECT sum(\"count\") as src FROM \"click\" WHERE \"step\" = 'src' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as sent FROM \"click\" WHERE \"step\" = 'sent' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as queue FROM \"click\" WHERE \"step\" = 'queue' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as mysql FROM \"click\" WHERE \"step\" = 'mysql' AND $timeFilter GROUP BY time(1d) fill(0)"
+					]
+				}
+			]
+		},{
+			"title":"New Row",
+			"panels":[
+				{
+					"title":"conversion",
+					"dsType":"infuxdb",
+					"sqls":[
+						"SELECT sum(\"count\") as src FROM \"conversion\" WHERE \"step\" = 'src' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as sent FROM \"conversion\" WHERE \"step\" = 'sent' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as queue FROM \"conversion\" WHERE \"step\" = 'queue' AND $timeFilter GROUP BY time(1d) fill(0)",
+						"SELECT sum(\"count\") as mysql FROM \"conversion\" WHERE \"step\" = 'mysql' AND $timeFilter GROUP BY time(1d) fill(0)"
+					]
+				}
+			]
+		}
+	]
+}
+

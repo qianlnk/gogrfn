@@ -31,7 +31,7 @@ func TestGetDashboard(t *testing.T) {
 
 func TestNewDashboard(t *testing.T) {
 	cli, _ := NewGrafanaClient(key, URL, user, password)
-	fmt.Println(cli.NewDashboard("lnk111", "utc"))
+	fmt.Println(cli.NewDashboard("lnk111", "6h", "utc"))
 }
 
 func TestDeleteDashboard(t *testing.T) {

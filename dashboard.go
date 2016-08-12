@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-func NewDashboard(title string, timezone string) *Dashboard {
+func NewDashboard(title string, interval string, timezone string) *Dashboard {
 	return &Dashboard{
 		Editable:        true,
 		HideControls:    false,
@@ -15,7 +15,7 @@ func NewDashboard(title string, timezone string) *Dashboard {
 		Refresh:         "30s",
 		SchemaVersion:   12,
 		SharedCrosshair: false,
-		Time:            NewTime(),
+		Time:            NewTime(interval),
 		Timepicker:      NewTimepicker(),
 		Timezone:        timezone,
 		Title:           title,
@@ -23,9 +23,9 @@ func NewDashboard(title string, timezone string) *Dashboard {
 	}
 }
 
-func NewTime() Time {
+func NewTime(interval string) Time {
 	return Time{
-		From: "now-3h",
+		From: fmt.Sprintf("now-%s", interval),
 		To:   "now",
 	}
 }
@@ -63,7 +63,7 @@ func (d *Dashboard) GetNextPanelID() int64 {
 	for _, r := range d.Rows {
 		for _, p := range r.Panels {
 			if maxID < p.ID {
-				maxID++
+				maxID = p.ID
 			}
 		}
 	}
@@ -91,7 +91,7 @@ func (c *Client) GetInheritPanel(title string, panelID int64) (*Panel, error) {
 	}
 
 	//clean this panel's Data
-	panel.ID = -1
+	panel.ID = 0
 	panel.Targets = nil
 	return panel, nil
 }
@@ -127,15 +127,15 @@ func (r *Row) AddPanel(panel *Panel, panelID int64, title string, sqls []string,
 	return nil
 }
 
-func (c *Client) NewDashboard(title, timezone string) (*Dashboard, error) {
+func (c *Client) NewDashboard(title, interval, timezone string) (*Dashboard, error) {
 	var dbul DashboardUploader
-	dbul.Dashboard = NewDashboard(title, timezone)
+	dbul.Dashboard = NewDashboard(title, interval, timezone)
 	dbul.Overwrite = false
 	body, err := json.Marshal(dbul)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(body))
+
 	err = c.post(API_DASHBOARDS_DB, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
@@ -151,13 +151,12 @@ func (c *Client) GetDashboard(title string) (*Dashboard, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(body))
+
 	err = json.Unmarshal(body, &db)
 	if err != nil {
 		fmt.Println(err)
 	}
-	body, _ = json.Marshal(db)
-	fmt.Println(string(body))
+
 	return db.Dashboard, err
 }
 
@@ -174,6 +173,5 @@ func (c *Client) UploadDashboard(db *Dashboard) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(body))
 	return c.post(API_DASHBOARDS_DB, bytes.NewBuffer(body))
 }
