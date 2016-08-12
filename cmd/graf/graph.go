@@ -37,8 +37,14 @@ func newGraph(cli *graf.Client, dbfile string) error {
 
 	for _, r := range dbCfg.Rows {
 		//add new row
-		db.AddRow(r.Title)
+		addNewRow := true
 		for _, p := range r.Panels {
+			deleteRepetition(db, p.Title)
+
+			if addNewRow {
+				db.AddRow(r.Title)
+				addNewRow = false
+			}
 			//add new panel
 			panelID := db.GetNextPanelID()
 			db.Rows[len(db.Rows)-1].AddPanel(inheritPanel, panelID, p.Title, p.Sqls, p.DsType)
@@ -51,4 +57,24 @@ func newGraph(cli *graf.Client, dbfile string) error {
 		return err
 	}
 	return errors.New("ok")
+}
+
+func deleteRepetition(db *graf.Dashboard, title string) {
+	repRow := -1
+	repPanel := -1
+	for i, r := range db.Rows {
+		for j, p := range r.Panels {
+			if p.Title == title {
+				repRow = i
+				repPanel = j
+			}
+		}
+	}
+
+	if repRow != -1 {
+		db.Rows[repRow].Panels = append(db.Rows[repRow].Panels[:repPanel], db.Rows[repRow].Panels[repPanel+1:]...)
+		if len(db.Rows[repRow].Panels) == 0 {
+			db.Rows = append(db.Rows[:repRow], db.Rows[repRow+1:]...)
+		}
+	}
 }
