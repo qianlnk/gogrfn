@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/qianlnk/graf.svg?branch=master)](https://travis-ci.org/qianlnk/graf)
 
+Graf was a grafana client, it support batch to create graphs by template. 
+
 # Install
 
 ```golang
